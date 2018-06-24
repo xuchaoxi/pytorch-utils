@@ -18,6 +18,26 @@ def load_checkpoint(filename='model_best.pth.tar', modeldir=''):
     checkpoint = torch.load(os.path.join(modeldir, filename))
     return checkpoint
 
+def adjust_learning_rate(opt, optimizer, epoch):
+    """Sets the learning rate to the initial LR
+       decayed by 10 every 30 epochs"""
+    lr = opt.learning_rate * (0.1 ** (epoch // opt.lr_update))
+    for param_group in optimizer.param_groups:
+        param_group['lr'] = lr
+
+def decay_learning_rate(opt, optimizer, decay):
+    """decay learning rate to the last LR"""
+    for param_group in optimizer.param_groups:
+        param_group['lr'] = param_group['lr']*decay
+
+def get_learning_rate(optimizer):
+    """decay learning rate to the last LR"""
+    lr_list = []
+    for param_group in optimizer.param_groups:
+        lr_list.append(param_group['lr'])
+    return lr_list
+
+
 class AverageMeter(object):
     """Computes and stores the average and current value"""
     def __init__(self):
